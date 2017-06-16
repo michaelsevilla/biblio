@@ -1,14 +1,32 @@
-docker run -i \
-  -v `pwd`:/tmp/tex \
-  narf/latex \
-  /tmp/tex/scale-out.tex
-  test.pdf 2> build.log
+#!/bin/bash
 
-if [ $? != "0" ] ; then
-  echo "ERROR: check build.log for details"
-  exit 1
-fi
+mkdir -p out
 
-echo "SUCCESS: check out/ folder for output"
+for input in "scale-out" "scale-up" "security" "storage"; do
+  echo "... processing $input.tex"
+  docker run --rm \
+    --workdir='/root/' \
+    -v `pwd`/:/mnt \
+    -v `pwd`/$input.tex:/root/$input.tex \
+    -v `pwd`/sigproc.bib:/root/sigproc.bib \
+    -v `pwd`/out:/root/out \
+    ivotron/texlive:latest sh -c \
+      "pdflatex $input
+       bibtex $input &&
+       pdflatex $input &&
+       pdflatex $input &&
+       mv $input.pdf /root/out/" &> build.log
+  
+  if [ $? != "0" ] ; then
+    echo "ERROR"
+    cat build.log
+    rm build.log
+    exit 1
+  fi
+  
+  mv out/$input.pdf .
+  rm -r out
+  rm build.log
+done
 
 exit 0
