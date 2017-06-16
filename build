@@ -8,7 +8,7 @@ for input in "scale-out" "scale-up" "security" "storage"; do
     --workdir='/root/' \
     -v `pwd`/:/mnt \
     -v `pwd`/$input.tex:/root/$input.tex \
-    -v `pwd`/sigproc.bib:/root/sigproc.bib \
+    -v `pwd`/references.bib:/root/references.bib \
     -v `pwd`/out:/root/out \
     ivotron/texlive:latest sh -c \
       "pdflatex $input
