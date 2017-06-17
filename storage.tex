@@ -142,7 +142,40 @@ f
 
 \noindent\cite{} Spanner - SQL query language, global consistency/transactions, better write performance, lock free read-only transactions.\\ 
 
-\noindent\cite{} F1 - SQL semantics with noSQL scalability. Takes Spanner's global transactions, consistency, and transparent sharding and adds distributed SQL queries, transactionally consistent secondary indexes, asynchronous schema changes including database reorganizations, optimistic transactions, and automatic change history recording and publishing.
+\noindent\cite{} F1 - SQL semantics with noSQL scalability. Takes Spanner's global transactions, consistency, and transparent sharding and adds distributed SQL queries, transactionally consistent secondary indexes, asynchronous schema changes including database reorganizations, optimistic transactions, and automatic change history recording and publishing.\\
+
+\noindent\cite{greenberg:hotstorage2015-mdhim} MDHIM - multi-D hierarchical
+indexing middleware: key-value store designed for HPC and multi-dimensional
+data. 
+
+\begin{itemize}
+  \item mechanisms: cursor types, bulk operations
+  \item policies: partitioning, server allocation, secondary indices
+  \item hpc tailored: infiniband, dynamic servers, pluggable DB, library
+\end{itemize}
+
+%Problem: cloud key-value stores don't perform well for tightly coupled and
+%parallel supercomputers and large data sets; HPC has simulation data,
+%structured (indexed in multiple dimensions), PB scale, infiniband/RDMA,
+%resource manager (no deamones)
+%
+%Existing: cloud kv-stores are diverse/unstructured, usually partitioned
+%w/consistent hash
+%
+%Motivation: PLFS can materialize reads on compute cluster; leverage big data
+%capabilities within an HPC environment, e.g., coordinates = key enhances
+%locality, access rate, semantically meaningfulG
+%
+%Solution: MDHIM 
+%  - HPC: infiniband, dynamic servers, pluggable DB, leverage resources, library
+%  - partitioned by range (not hash): # of spawned servers affects performance
+%  - cursor type operations and bulk ops: off-load query decision making to clients
+%  - multiple dimensions: users create secondary index instances
+%
+%Why does PLFS need a file system back end in the first place?  How does ingest
+%work if they are spawned at job start?
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metadata Management
