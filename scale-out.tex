@@ -206,6 +206,69 @@ Optimizations: VM exit and remapping is costly, so do side core emulation and sa
 \noindent\cite{schwarzkopf:hotcloud2012-7-sins} 7 Deadly Sins - common simplifications/shortcuts in cloud research are ``clouding" our analysis: unnecessary distributed data parallelism  (not all jobs are parallel), assuming performance homogeneity (poor methodology/result presentation), picking the low-hanging fruit (speedup over general Hadoop is not useful), forcing the abstraction (workload not big enough), unrepresentative workloads (should be running many jobs at once, not batch), perfect elasticity (limits to scalability/parallelism), ignoring fault tolerance (there is a cost).\\
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HPC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent\cite{perez:jctc20150parsplice} ParSplice - molecular dynamics
+simulator that uses a hybrid MD/AMD approach to get the best of both worlds:
+fast simulation for uneventful persiods and exact simulations for rapid
+transitions to new states. The novelty is speculation and segment splicing in
+the AMD phase, and a model for determining when transitions occur.
+
+%1. What is the problem the authors are trying to solve?
+%
+%Simulating atomic interactions in long-time dynamics with heterogenous
+%barriers. Energy barriers are thresholds for when the system changes state;
+%these transisitions have interesting events but the lull between causes
+%problems for existing techniques.
+%
+%2. What other approaches or solutions existed at the time that this work was done?
+%
+%MD and AMD are two competing approaches to simulating atoms. MD is exact but
+%only runs for short periods because the error explodes while AMD is highly
+%parallel because it relaxes accuracy, instead opting for simulating
+%state-to-state trajectory instead of per-molecule trajectories. ParRep is an
+%AMD technique that uses statistics and parallelization by fuzzing the accuracy
+%of simulations with similiar barriers (and thus longer state occupations).
+%
+%3. What was wrong with the other approaches or solutions?
+%
+%For running simulations with different barrier types, neither technique is
+%sufficient. MD is too precise and the error nullifies the validity of the
+%simulation. AMD does not offer enough accuracy for the interesting periods.`
+%
+%4. What is the authors' approach or solution?
+%
+%Using MD for state transitions and AMD for periods of innactivity.
+%- inactivity modeled with segments, which are spliced from smaller segments
+%- model for long term dynamics that pinpoints state transitions
+%- meta-simulation to predict transitions to increase parallelism 
+%
+%Implementation
+%- splicer: tries to make biggest segment
+%  - coalesce existing segments, speculatively generate offset for P
+%  - label states with connecitvity graphs to get a hash
+%- producers: create segments given offset and act as a cache for requests
+%  - use connective graphs to make DB rd/wr efficient
+%
+%5. Why is it better than the other approaches or solutions?
+%
+%ParSplice supports different accuracy (i.e. arbitrarily) for unstable states
+%and performance can be optimioed if the metastable states/correlation times are
+%known. It defeat the low barrier problem for long running dynamic simluations.
+%
+%6. How does it perform?
+%
+%Good?
+%
+%7. Why is this work important?
+%
+%Hybrid approach to MD and AMD that lets us use the resources of HPC via
+%speculation, asynchornity, and fault model. The approach makes it feasible
+%(correctness wise) and accurate enough to see what interesting events.
+%
+%8. 3+ comments/questions
 
 \bibliographystyle{abbrv}
 \bibliography{references}
